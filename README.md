@@ -43,4 +43,3 @@ Tampilan :
 
 ![Ubah Produk](screenshots/ubahproduct.png)
 
-"# TUGAS-8---PERTEMUAN-10-H1D023006" 
