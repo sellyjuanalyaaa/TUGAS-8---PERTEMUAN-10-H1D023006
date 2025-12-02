@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tokokita/bloc/produk_bloc.dart';
 import 'package:tokokita/model/produk.dart';
 import 'package:tokokita/ui/produk_form.dart';
-
-const Color primaryColor = Color(0xFFABE0F0);
-
+import 'package:tokokita/ui/produk_page.dart';
+import 'package:tokokita/widget/warning_dialog.dart';
+import 'package:tokokita/helpers/app_theme.dart';
 // ignore: must_be_immutable
 class ProdukDetail extends StatefulWidget {
 	Produk? produk;
@@ -18,8 +19,8 @@ class _ProdukDetailState extends State<ProdukDetail> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: const Text('Detail Produk alyaaa'),
-				backgroundColor: primaryColor,
+				title: const Text('Detail Produk Alyaaa'),
+				backgroundColor: AppTheme.primaryColor,
 			),
 			body: Center(
 				child: Column(
@@ -52,55 +53,89 @@ class _ProdukDetailState extends State<ProdukDetail> {
 			mainAxisSize: MainAxisSize.min,
 			children: [
 				// Tombol Edit
-				OutlinedButton(
-					style: OutlinedButton.styleFrom(
-						foregroundColor: primaryColor,
-						side: const BorderSide(color: primaryColor),
-					),
-					child: const Text("EDIT"),
-					onPressed: () {
-						Navigator.push(
-							context,
-							MaterialPageRoute(
-								builder: (context) => ProdukForm(
-									produk: widget.produk!,
+								ElevatedButton(
+									style: AppTheme.elevatedButtonStyle(),
+									child: const Text("EDIT"),
+									onPressed: () {
+										Navigator.push(
+											context,
+											MaterialPageRoute(
+												builder: (context) => ProdukForm(
+													produk: widget.produk!,
+												),
+											),
+										);
+									},
 								),
-							),
-						);
-					},
-				),
-				const SizedBox(width: 8),
-				// Tombol Hapus
-				ElevatedButton(
-					style: ElevatedButton.styleFrom(backgroundColor: primaryColor, foregroundColor: Colors.white),
-					child: const Text("DELETE"),
-					onPressed: () => confirmHapus(),
-				),
+								const SizedBox(width: 8),
+								// Tombol Hapus
+								ElevatedButton(
+									style: AppTheme.elevatedButtonStyle(bg: Colors.red),
+									child: const Text("DELETE"),
+									onPressed: () => confirmHapus(),
+								),
 			],
 		);
 	}
 
-	void confirmHapus() {
-		showDialog(
+	Future<void> confirmHapus() async {
+		final confirmed = await showDialog<bool>(
 			context: context,
 			builder: (context) => AlertDialog(
 				content: const Text("Yakin ingin menghapus data ini?"),
 				actions: [
-					TextButton(
-						child: const Text('Ya'),
-						onPressed: () {
-							// TODO: panggil API hapus di sini
-							Navigator.pop(context); // tutup dialog
-							Navigator.pop(context); // kembali ke daftar produk
-							ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Produk dihapus')));
-						},
-					),
-					TextButton(
-						child: const Text('Batal'),
-						onPressed: () => Navigator.pop(context),
-					),
+										// tombol hapus (jelas/berwarna)
+										ElevatedButton(
+											style: ElevatedButton.styleFrom(
+												backgroundColor: Colors.red,
+												foregroundColor: Colors.white,
+												elevation: 0,
+											),
+											child: const Text("Ya"),
+											onPressed: () async {
+												Navigator.of(context).pop(true);
+											},
+										),
+										const SizedBox(width: 8),
+																				// tombol batal (lebih terlihat): white filled with colored border
+																				ElevatedButton(
+																					style: ElevatedButton.styleFrom(
+																						backgroundColor: Colors.white,
+																						foregroundColor: Colors.black,
+																						elevation: 0,
+																						side: BorderSide(color: AppTheme.primaryColor.withOpacity(0.9)),
+																					),
+																					child: const Text("Batal"),
+																					onPressed: () => Navigator.pop(context, false),
+																				)
 				],
 			),
 		);
+
+		if (confirmed != true) return;
+
+		try {
+			final deleted = await ProdukBloc.deleteProduk(id: int.parse(widget.produk!.id!));
+			if (deleted) {
+				if (!mounted) return;
+				await Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const ProdukPage()));
+			} else {
+				if (!mounted) return;
+				await showDialog(
+					context: context,
+					builder: (BuildContext context) => const WarningDialog(
+						description: "Hapus gagal, silahkan coba lagi",
+					),
+				);
+			}
+		} catch (error) {
+			if (!mounted) return;
+			await showDialog(
+				context: context,
+				builder: (BuildContext context) => const WarningDialog(
+					description: "Hapus gagal, silahkan coba lagi",
+				),
+			);
+		}
 	}
 }
