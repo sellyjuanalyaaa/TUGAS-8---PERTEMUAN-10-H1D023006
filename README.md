@@ -36,9 +36,9 @@ Tampilan :
 a. Form Registrasi (isi & validasi)
 
 ![Registrasi](screenshots/isiregister.png)
-
-- Isi Nama (min. 3 karakter), Email (format valid), Password (min. 6 karakter), dan Konfirmasi Password (harus sama).
 - Jika format tidak sesuai, pesan validasi akan tampil di bawah field.
+- Isi Nama (min. 3 karakter), Email (format valid), Password (min. 6 karakter), dan Konfirmasi Password (harus sama).
+
 ![Registrasi Berhasil](screenshots/daftarsukses.png)
 
 ### Proses Login
