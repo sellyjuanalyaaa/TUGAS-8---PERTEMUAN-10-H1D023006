@@ -47,7 +47,8 @@ a. Form Registrasi (isi & validasi)
 ### Proses Login
 
 a. Form Login (isi form)
-- isi form login
+
+- isi form login.
 
 ![Form Login](screenshots/loginalyaa.png)
 
