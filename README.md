@@ -35,17 +35,19 @@ Tampilan :
 
 a. Form Registrasi (isi & validasi)
 
-mengisikan form sesuai dengan ketentuan
+- mengisikan form sesuai dengan ketentuan
+
 ![Registrasi](screenshots/isiregister.png)
 - Jika format tidak sesuai, pesan validasi akan tampil di bawah field.
 - Isi Nama (min. 3 karakter), Email (format valid), Password (min. 6 karakter), dan Konfirmasi Password (harus sama).
-popup registrasi berhasil
+- popup registrasi berhasil
+
 ![Registrasi Berhasil](screenshots/daftarsukses.png)
 
 ### Proses Login
 
 a. Form Login (isi form)
-isi form login
+- isi form login
 ![Form Login](screenshots/loginalyaa.png)
 
 - Menginputkan email dan password pada form.
